@@ -48,6 +48,13 @@ function middlewareLogger (req, res, next) {
     console.log(req.originalUrl)
     next()
 }
+function checkValidate (req, res, next) {
+    if(req.body.title && req.body.cuisine) {
+        next()
+    } else {
+        return res.status(400).send('Props missings')
+    }
+}
 
 //Create(POST) Read(GET) Update(PATCH) Delete(delete)
 const express = require("express");
@@ -61,7 +68,7 @@ app.get("/api/recipes", (request, response) => {
   response.json(recipes);
 });
 
-app.post('/api/recipes', (request, response) => {
+app.post('/api/recipes', checkValidate ,(request, response) => {
     const data = request.body
     const recipe = {...data, id: nextId++, }
     recipes.push(recipe)
