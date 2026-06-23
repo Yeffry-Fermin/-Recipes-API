@@ -43,17 +43,17 @@ let recipes = [
 
 let nextId = 6;
 
-function middlewareLogger (req, res, next) {
-    console.log(req.method)
-    console.log(req.originalUrl)
-    next()
+function middlewareLogger(req, res, next) {
+  console.log(req.method);
+  console.log(req.originalUrl);
+  next();
 }
-function checkValidate (req, res, next) {
-    if(req.body.title && req.body.cuisine) {
-        next()
-    } else {
-        return res.status(400).send('Props missings')
-    }
+function checkValidate(req, res, next) {
+  if (req.body.title && req.body.cuisine) {
+    next();
+  } else {
+    return res.status(400).send("Props missings");
+  }
 }
 
 //Create(POST) Read(GET) Update(PATCH) Delete(delete)
@@ -62,56 +62,82 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(middlewareLogger)
+app.use(middlewareLogger);
 
-app.get("/api/recipes", (request, response) => {
-  response.json(recipes);
+app.get("/api/recipes", (request, response, next) => {
+  try {
+    response.json(recipes);
+  } catch (error) {
+    next(error);
+  }
 });
 
-app.post('/api/recipes', checkValidate ,(request, response) => {
-    const data = request.body
-    const recipe = {...data, id: nextId++, }
-    recipes.push(recipe)
-    response.status(201).json(recipe)
-})
-
-app.get("/api/recipes/:id", (request, response) => {
-    const recipe = recipes.find((recip) => {
-        return recip.id === Number(request.params.id)
-    })
-    // console.log(recipe)
-    if(recipe) {
-        response.json(recipe)
-    } else {
-        response.status(404).send('not Found')
-    }
+app.post("/api/recipes", checkValidate, (request, response, next) => {
+  try {
+    const data = request.body;
+    const recipe = { ...data, id: nextId++ };
+    recipes.push(recipe);
+    response.status(201).json(recipe);
+  } catch (error) {
+    next(error);
+  }
 });
 
-app.patch("/api/recipes/:id", (request, response) => {
+app.get("/api/recipes/:id", (request, response, next) => {
+  try {
     const recipe = recipes.find((recip) => {
-        return recip.id === Number(request.params.id)
-    })
-    if(recipe) {
-        Object.assign(recipe, request.body)
-        response.status(200).json(recipe)
+      return recip.id === Number(request.params.id);
+    });
+    if (recipe) {
+      response.json(recipe);
     } else {
-        response.status(404).send("Not found")
+      response.status(404).send("not Found");
     }
-})
+  } catch (error) {
+    next(error);
+  }
+});
 
-app.delete("/api/recipes/:id", (request, response) => {
+app.patch("/api/recipes/:id", (request, response, next) => {
+  try {
     const recipe = recipes.find((recip) => {
-        return recip.id === Number(request.params.id)
-    })
-    if(recipe) {
-        recipes = recipes.filter((recipe) => {
-            return recipe.id != Number(request.params.id)
-        })
-        response.status(204).send('Recipe deleted')
+      return recip.id === Number(request.params.id);
+    });
+    if (recipe) {
+      Object.assign(recipe, request.body);
+      response.status(200).json(recipe);
     } else {
-        response.status(404).send('Recipe not found')
+      response.status(404).send("Not found");
     }
-})
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.delete("/api/recipes/:id", (request, response, next) => {
+  try {
+    const recipe = recipes.find((recip) => {
+      return recip.id === Number(request.params.id);
+    });
+    if (recipe) {
+      recipes = recipes.filter((recipe) => {
+        return recipe.id != Number(request.params.id);
+      });
+      response.status(204).send("Recipe deleted");
+    } else {
+      response.status(404).send("Recipe not found");
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+function errorHandler(err, req, res, next) {
+    console.log(err)
+    res.sendStatus(500)
+}
+
+app.use(errorHandler)
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
