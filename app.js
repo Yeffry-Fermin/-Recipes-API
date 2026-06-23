@@ -43,12 +43,19 @@ let recipes = [
 
 let nextId = 6;
 
+function middlewareLogger (req, res, next) {
+    console.log(req.method)
+    console.log(req.originalUrl)
+    next()
+}
+
 //Create(POST) Read(GET) Update(PATCH) Delete(delete)
 const express = require("express");
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+app.use(middlewareLogger)
 
 app.get("/api/recipes", (request, response) => {
   response.json(recipes);
