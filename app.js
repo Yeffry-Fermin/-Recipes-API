@@ -5,14 +5,14 @@ function middlewareLogger(req, res, next) {
 }
 
 
-//Create(POST) Read(GET) Update(PATCH) Delete(delete)
-const apiRouter = require('./api')
 const express = require("express");
+const recipeApiRouter = require('./api/index')
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 app.use(middlewareLogger);
+app.use('/api', recipeApiRouter)
 
 
 function errorHandler(err, req, res, next) {
@@ -21,7 +21,6 @@ function errorHandler(err, req, res, next) {
 }
 
 app.use(errorHandler)
-app.use('/api', apiRouter)
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });

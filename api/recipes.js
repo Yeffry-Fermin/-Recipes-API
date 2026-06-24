@@ -53,7 +53,7 @@ function checkValidate(req, res, next) {
   }
 }
 
-router.get("/recipes", (request, response, next) => {
+router.get("/", (request, response, next) => {
   try {
     response.json(recipes);
   } catch (error) {
@@ -61,7 +61,7 @@ router.get("/recipes", (request, response, next) => {
   }
 });
 
-router.post("/recipes", checkValidate, (request, response, next) => {
+router.post("/", checkValidate, (request, response, next) => {
   try {
     const data = request.body;
     const recipe = { ...data, id: nextId++ };
@@ -72,7 +72,7 @@ router.post("/recipes", checkValidate, (request, response, next) => {
   }
 });
 
-router.get("/recipes/:id", (request, response, next) => {
+router.get("/:id", (request, response, next) => {
   try {
     const recipe = recipes.find((recip) => {
       return recip.id === Number(request.params.id);
@@ -87,7 +87,7 @@ router.get("/recipes/:id", (request, response, next) => {
   }
 });
 
-router.patch("/recipes/:id", (request, response, next) => {
+router.patch("/:id", (request, response, next) => {
   try {
     const recipe = recipes.find((recip) => {
       return recip.id === Number(request.params.id);
@@ -103,7 +103,7 @@ router.patch("/recipes/:id", (request, response, next) => {
   }
 });
 
-router.delete("/recipes/:id", (request, response, next) => {
+router.delete("/:id", (request, response, next) => {
   try {
     const recipe = recipes.find((recip) => {
       return recip.id === Number(request.params.id);
