@@ -44,6 +44,7 @@ let recipes = [
 let nextId = 6;
 
 const router = require('express').Router()
+const reviewRouter = require('./reviews') 
 
 function checkValidate(req, res, next) {
   if (req.body.title && req.body.cuisine) {
