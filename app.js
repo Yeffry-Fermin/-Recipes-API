@@ -1,9 +1,3 @@
-// function middlewareLogger(req, res, next) {
-//   console.log(req.method);
-//   console.log(req.originalUrl);
-//   next();
-// }
-
 const express = require("express");
 const apiRouter = require("./api/index");
 const morgan = require('morgan')
